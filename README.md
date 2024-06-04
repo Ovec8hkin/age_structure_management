@@ -1,0 +1,2 @@
+## Using Age Structure for Fisheries Management
+Code and analyses for utilizing metrics of fisheries age structure within harvest control rules (HCRs) and/or the NPFMC risk table framework. This work is being used to inform the selection and testing of novel HCRs within a [management strategy evaluation (MSE) framework for Alaska Sablefish](https://github.com/ovec8hkin/SablefishMSE).
