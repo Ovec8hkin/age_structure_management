@@ -26,6 +26,7 @@ project_multi2 <- function(init_naa, recruitment, dem_params, nyears, model_opti
     # nsurveys <- get_model_dimensions(dem_params$surv_sel)$nsurveys
     nsurveys <- ifelse(model_options$simulate_observations, get_model_dimensions(dem_params$surv_sel)$nfleets, 0)
 
+    caa         = array(NA, dim=c(nyears, nages, nsexes, nregions))
     naa         = array(NA, dim=c(nyears+1, nages, nsexes, nregions))
     naa[1,,,] = init_naa
 
@@ -76,8 +77,9 @@ project_multi2 <- function(init_naa, recruitment, dem_params, nyears, model_opti
         # region_props <- subset_matrix(model_options$region_apportionment, y, d=1, drop=FALSE)
         # fleet_props <- subset_matrix(model_options$fleet_apportionment, y, d=1, drop=FALSE)
 
+        log_dev <- model_options$recruitment_devs[y+1]
         if(is.function(recruitment)){
-            r_y <- do.call(recruitment, c(list(naa=naa[y,,,,drop=FALSE], dem_params=dp.y), model_options$recruitment_pars))
+            r_y <- do.call(recruitment, c(list(naa=naa[y,,,,drop=FALSE], dem_params=dp.y, logdev=log_dev), model_options$recruitment_pars))
         }else{
             rs <- array(recruitment, dim=c(nyears+1, 1))
             r_y <- subset_matrix(rs, y+1, d=1, drop=FALSE)
@@ -111,6 +113,7 @@ project_multi2 <- function(init_naa, recruitment, dem_params, nyears, model_opti
 
         # update state
         naa[y+1,,,] <- out_vars$naa_tmp
+        caa[y,,,] <- out_vars$caa_tmp
 
         # f[y,,,,] <- out_vars$F_f_tmp
         recruits[y+1,,,] <- rec
@@ -119,6 +122,6 @@ project_multi2 <- function(init_naa, recruitment, dem_params, nyears, model_opti
 
     }
 
-    return(listN(naa))
+    return(listN(naa, caa, removals_timeseries))
 
 }

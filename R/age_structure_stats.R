@@ -86,6 +86,12 @@ prop_fully_mature <- function(naa, mat){
 #' @example
 #'
 abi2 <- function(naa, ref, threshold=0.90, start_age=2){
+    
+    if(length(ref) > length(naa)){
+        ref_mat <- matrix(ref, ncol=length(naa), byrow=TRUE)
+        ref <- apply(ref_mat, 2, mean)
+    }
+
     ref_naa <- ref[start_age:length(ref)]
     ref_naa_prop <- ref_naa/sum(ref_naa)
     A_ref <- min(which(cumsum(ref_naa_prop) > threshold))
